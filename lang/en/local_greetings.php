@@ -29,3 +29,4 @@ $string['greetings'] = 'Greetings';
 $string['username'] = 'Enter your username';
 $string['greetinguser'] = 'Greetings, user.';
 $string['greetingloggedinuser'] = 'Greetings, {$a}.';
+$string['yourmessage'] = 'Your message';
