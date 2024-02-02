@@ -22,7 +22,8 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-function local_greetings_get_greeting($user) {
+function local_greetings_get_greeting($user)
+{
     if ($user == null) {
         return get_string('greetinguser', 'local_greetings');
     }
@@ -45,7 +46,8 @@ function local_greetings_get_greeting($user) {
  *
  * @param navigation_node $frontpage Node representing the front page in the navigation tree.
  */
-function local_greetings_extend_navigation_frontpage(navigation_node $frontpage) {
+function local_greetings_extend_navigation_frontpage(navigation_node $frontpage)
+{
     $frontpage->add(
         text: get_string('greetings', 'local_greetings'),
         action: new moodle_url('/local/greetings'),

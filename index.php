@@ -65,7 +65,10 @@ echo $OUTPUT->header();
 if (isloggedin()) {
     echo html_writer::tag('h5', local_greetings_get_greeting($USER));
 } else {
-    echo html_writer::tag('h5', get_string('greetinguser', 'local_greetings'));
+    echo html_writer::tag(
+        'h5',
+        get_string('greetinguser', 'local_greetings')
+    );
 }
 
 // echo html_writer::empty_tag('br');
@@ -80,7 +83,7 @@ if (isloggedin()) {
 //     'class' => 'btn btn-primary mt-3'
 // ]);
 
-// global $DB;
+global $DB;
 
 // $DB->insert_record('user', [
 // 'username' => 'test',
@@ -97,7 +100,30 @@ $messageform->display();
 
 if ($data = $messageform->get_data()) {
     $message = required_param('message', PARAM_TEXT);
-    echo $OUTPUT->heading($message, 5);
+
+    if (!empty($message)) {
+        $record = new stdClass;
+        $record->message = $message;
+        $record->timecreated = time();
+
+        $DB->insert_record('local_greetings_messages', $record);
+    }
 }
+
+$messages = $DB->get_records('local_greetings_messages');
+
+echo $OUTPUT->heading('Output messages:', 6);
+echo html_writer::start_div('row');
+foreach ($messages as $message) {
+    echo html_writer::start_div('col col-lg-3');
+    echo html_writer::start_div('card');
+    echo html_writer::start_div('card-body');
+    echo html_writer::tag('p', $message->message, ['class' => 'my-0 font-weight-bold']);
+    echo html_writer::tag('small', userdate($message->timecreated));
+    echo html_writer::end_div();
+    echo html_writer::end_div();
+    echo html_writer::end_div();
+}
+echo html_writer::end_div();
 
 echo $OUTPUT->footer();
