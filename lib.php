@@ -43,15 +43,20 @@ function local_greetings_get_greeting($user)
 
 /**
  * Insert a link to index.php on the site front page navigation menu.
+ * 
+ * ! I can't do this since moodle 4.0
  *
  * @param navigation_node $frontpage Node representing the front page in the navigation tree.
  */
 function local_greetings_extend_navigation_frontpage(navigation_node $frontpage)
 {
-    $frontpage->add(
-        text: get_string('greetings', 'local_greetings'),
-        action: new moodle_url('/local/greetings'),
-        type: navigation_node::TYPE_CUSTOM,
-        icon: new pix_icon('t/message', '')
-    );
+    $frontpage->add(get_string('greetings', 'local_greetings'), new moodle_url('/local/greetings'));
 }
+
+// function local_greetings_extend_navigation() {
+//     navigation_node::override_active_url(
+//         new moodle_url('/your/url/here.php', [
+//             'param' => 'value',
+//         ])
+//     );
+// }

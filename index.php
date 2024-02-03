@@ -40,6 +40,7 @@
 
 require_once(__DIR__ . '/../../config.php');
 require_once($CFG->dirroot . '/local/greetings/lib.php');
+require_once($CFG->dirroot . '/theme/eduhub/lib/helpers.php');
 
 $context = \context_system::instance();
 
@@ -48,6 +49,12 @@ $PAGE->set_url(new moodle_url('/local/greetings/index.php'));
 $PAGE->set_pagelayout('standard');
 $PAGE->set_title($SITE->fullname);
 $PAGE->set_heading(get_string('greetings', 'local_greetings'));
+
+require_login();
+
+if (isguestuser()) {
+    throw new moodle_exception('noguest');
+}
 
 $PAGE->set_secondary_navigation(true);
 
@@ -101,11 +108,11 @@ $messageform->display();
 if ($data = $messageform->get_data()) {
     $message = required_param('message', PARAM_TEXT);
 
-    if (!isloggedin()) {
-        echo html_writer::start_div('alert alert-danger');
-        echo html_writer::tag('p', 'You have to log in first', ['class' => 'mb-0']);
-        echo html_writer::end_div();
-    }
+    // if (!isloggedin()) {
+    //     echo html_writer::start_div('alert alert-danger');
+    //     echo html_writer::tag('p', 'You have to log in first', ['class' => 'mb-0']);
+    //     echo html_writer::end_div();
+    // }
 
     if (!empty($message)) {
         $record = new stdClass;
@@ -120,14 +127,15 @@ if ($data = $messageform->get_data()) {
 $userfields = \core_user\fields::for_name()->with_identity($context);
 $userfieldssql = $userfields->get_sql('u');
 
-$sql = "SELECT lgm.id, lgm.message, lgm.timecreated {$userfieldssql->selects} 
-            FROM {local_greetings_messages} AS lgm 
-          JOIN {user} AS u ON u.id = lgm.userid";
+$sql = "SELECT m.id, m.message, m.timecreated {$userfieldssql->selects} 
+          FROM {local_greetings_messages} m 
+    INNER JOIN {user} u ON u.id = m.userid
+      ORDER BY m.timecreated";
 $messages = $DB->get_records_sql($sql);
 
 // dd($messages);
 
-if (isloggedin()) {
+// if (isloggedin()) {
     echo $OUTPUT->heading('Output messages:', 6);
     echo html_writer::start_div('row');
     foreach ($messages as $message) {
@@ -135,13 +143,13 @@ if (isloggedin()) {
         echo html_writer::start_div('card');
         echo html_writer::start_div('card-body');
         echo html_writer::tag('p', get_string('postedby', 'local_greetings', fullname($message)), ['class' => 'mb-2 font-weight-bold']);
-        echo html_writer::tag('p', $message->message, ['class' => 'my-0']);
+        echo html_writer::tag('p', format_text($message->message), ['class' => 'my-0']);
         echo html_writer::tag('small', userdate($message->timecreated));
         echo html_writer::end_div();
         echo html_writer::end_div();
         echo html_writer::end_div();
     }
     echo html_writer::end_div();
-}
+// }
 
 echo $OUTPUT->footer();
