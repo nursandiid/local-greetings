@@ -79,7 +79,12 @@ if ($data = $messageform->get_data()) {
         $record->userid = $USER->id;
 
         $DB->insert_record('local_greetings_messages', $record);
-        redirect(new moodle_url('/local/greetings/index.php'), get_string('successfullycreated', 'local_greetings'), 3, \core\output\notification::NOTIFY_SUCCESS);
+        redirect(
+            new moodle_url('/local/greetings/index.php'), 
+            get_string('successfullycreated', 'local_greetings'), 
+            3, 
+            \core\output\notification::NOTIFY_SUCCESS
+        );
     }
 }
 
@@ -87,12 +92,14 @@ $deleteanypost = has_capability('local/greetings:deleteanymessage', $context);
 $action = optional_param('action', '', PARAM_TEXT);
 if ($action == 'del') {
     $id = required_param('id', PARAM_TEXT);
+    require_sesskey();
 
     if ($deleteanypost) {
         $DB->delete_records('local_greetings_messages', ['id' => $id]);
-        redirect(new moodle_url('/local/greetings/index.php'), get_string('successfullydeleted', 'local_greetings'), 3, \core\output\notification::NOTIFY_SUCCESS);
+        // redirect(new moodle_url('/local/greetings/index.php'), get_string('successfullydeleted', 'local_greetings'), 3, \core\output\notification::NOTIFY_SUCCESS);
+        redirect($PAGE->url, get_string('successfullydeleted', 'local_greetings'), 3, \core\output\notification::NOTIFY_SUCCESS);
     } else {
-        redirect(new moodle_url('/local/greetings/index.php'), 'You do not have a permission to delete a post', 3, \core\output\notification::NOTIFY_ERROR);
+        redirect($PAGE->url, 'You do not have a permission to delete a post', 3, \core\output\notification::NOTIFY_ERROR);
     }
     // \core\notification::add('Message successfully deleted', \core\notification::SUCCESS);
 }
@@ -148,6 +155,8 @@ $messages = $DB->get_records_sql($sql);
 
 // dd($messages, $USER);
 
+// dump($_SESSION['USER'], $USER);
+
 $allowview = has_capability('local/greetings:viewmessages', $context);
 if ($allowview) {
     echo $OUTPUT->heading('Output messages:', 5);
@@ -164,7 +173,11 @@ if ($allowview) {
             echo html_writer::link(
                 new moodle_url(
                     '/local/greetings/index.php',
-                    array('action' => 'del', 'id' => $message->id)
+                    [
+                        'action' => 'del', 
+                        'sesskey' => sesskey(),
+                        'id' => $message->id
+                    ]
                 ),
                 $OUTPUT->pix_icon('t/delete', '') . get_string('delete'),
                 ['class' => 'btn btn-danger btn-block']
