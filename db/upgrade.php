@@ -22,6 +22,8 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+defined('MOODLE_INTERNAL') || die();
+
 /**
  * Define upgrade steps to be performed to upgrade the plugin from the old version to the current one.
  *
@@ -32,7 +34,7 @@ function xmldb_local_greetings_upgrade($oldversion) {
 
     $dbman = $DB->get_manager();
 
-    if ($oldversion < 2024020300) {
+    if ($oldversion < 2024030302) {
 
         // Define field id to be added to local_greetings_messages.
         $table = new xmldb_table('local_greetings_messages');
@@ -50,7 +52,7 @@ function xmldb_local_greetings_upgrade($oldversion) {
         $dbman->add_key($table, $key);
 
         // Greetings savepoint reached.
-        upgrade_plugin_savepoint(true, 2024020300, 'local', 'greetings');
+        upgrade_plugin_savepoint(true, 2024030302, 'local', 'greetings');
     }
 
     return true;
