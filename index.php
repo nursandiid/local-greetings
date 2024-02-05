@@ -159,11 +159,14 @@ $messages = $DB->get_records_sql($sql);
 
 $allowview = has_capability('local/greetings:viewmessages', $context);
 if ($allowview) {
+    $cardbgcolor = get_config('local_greetings', 'messagecardbgcolor');
+    $cardtextcolor = get_config('local_greetings', 'messagecardtextcolor');
+
     echo $OUTPUT->heading('Output messages:', 5);
     echo html_writer::start_div('row');
     foreach ($messages as $message) {
         echo html_writer::start_div('col-6 col-lg-3');
-        echo html_writer::start_div('card', ['style' => 'min-height: 200px; max-height: 200px;']);
+        echo html_writer::start_div('card', ['style' => 'min-height: 200px; max-height: 200px; background: '. $cardbgcolor .'; color: ' . $cardtextcolor . ';']);
         echo html_writer::start_div('card-body d-flex flex-column pb-0');
         echo html_writer::tag('p', get_string('postedby', 'local_greetings', fullname($message)), ['class' => 'mb-2 font-weight-bold']);
         echo html_writer::tag('p', format_text($message->message), ['class' => 'my-0']);

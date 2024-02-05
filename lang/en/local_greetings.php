@@ -37,3 +37,7 @@ $string['successfullydeleted'] = 'Message successfully deleted';
 $string['greetings:viewmessages'] = 'View messages on the Greetings wall';
 $string['greetings:postmessages'] = 'Post a new message on the Greetings wall';
 $string['greetings:deleteanymessage'] = 'Delete selected message on the Greetings wall';
+$string['messagecardbgcolor'] = 'Message card color';
+$string['messagecardbgcolordesc'] = 'Background color of the message card';
+$string['messagecardtextcolor'] = 'Message card text color';
+$string['messagecardtextcolordesc'] = 'Text color of the message card';
