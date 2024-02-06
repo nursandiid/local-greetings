@@ -22,6 +22,8 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+defined('MOODLE_INTERNAL') || die();
+
 function local_greetings_get_greeting($user)
 {
     if ($user == null) {
@@ -30,8 +32,17 @@ function local_greetings_get_greeting($user)
 
     $country = $user->country;
     switch ($country) {
+        case 'AU':
+            $langstr = 'greetinguserau';
+            break;
         case 'ES':
             $langstr = 'greetinguseres';
+            break;
+        case 'FJ':
+            $langstr = 'greetinguserfj';
+            break;
+        case 'NZ':
+            $langstr = 'greetingusernz';
             break;
         default:
             $langstr = 'greetingloggedinuser';
