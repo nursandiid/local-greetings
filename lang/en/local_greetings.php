@@ -34,6 +34,7 @@ $string['yourmessage'] = 'Your message';
 $string['postedby'] = 'Posted by: {$a}';
 $string['successfullycreated'] = 'Message successfully created';
 $string['successfullydeleted'] = 'Message successfully deleted';
+$string['successfullyupdated'] = 'Message successfully updated';
 $string['greetings:viewmessages'] = 'View messages on the Greetings wall';
 $string['greetings:postmessages'] = 'Post a new message on the Greetings wall';
 $string['greetings:deleteanymessage'] = 'Delete selected message on the Greetings wall';

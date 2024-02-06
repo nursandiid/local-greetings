@@ -64,7 +64,12 @@ $messageform = new \local_greetings\form\message_form();
 $allowpost = has_capability('local/greetings:postmessages', $context);
 
 if ($data = $messageform->get_data()) {
+    $id = required_param('id', PARAM_TEXT);
     $message = required_param('message', PARAM_TEXT);
+
+    if (empty($message)) {
+        throw new \moodle_exception('missingparam', '', '', 'message');
+    }
 
     // if (!isloggedin()) {
     //     echo html_writer::start_div('alert alert-danger');
@@ -72,7 +77,9 @@ if ($data = $messageform->get_data()) {
     //     echo html_writer::end_div();
     // }
 
-    if (!empty($message)) {
+    $action = optional_param('action', '', PARAM_TEXT);
+
+    if (empty($id)) {
         $record = new stdClass;
         $record->message = $message;
         $record->timecreated = time();
@@ -85,10 +92,23 @@ if ($data = $messageform->get_data()) {
             3, 
             \core\output\notification::NOTIFY_SUCCESS
         );
+    } else {
+        $DB->update_record('local_greetings_messages', [
+            'id' => $id,
+            'message' => $message
+        ]);
+        redirect(
+            new moodle_url('/local/greetings/index.php'), 
+            get_string('successfullyupdated', 'local_greetings'), 
+            3, 
+            \core\output\notification::NOTIFY_SUCCESS
+        );
     }
 }
 
+$editselectedpost = has_capability('local/greetings:editselectedmessage', $context);
 $deleteanypost = has_capability('local/greetings:deleteanymessage', $context);
+
 $action = optional_param('action', '', PARAM_TEXT);
 if ($action == 'del') {
     $id = required_param('id', PARAM_TEXT);
@@ -113,6 +133,9 @@ if (isloggedin()) {
         get_string('greetinguser', 'local_greetings')
     );
 }
+
+// \core\notification::add('Message successfully deleted', \core\notification::INFO);
+// \core\notification::info('Message successfully deleted');
 
 // echo html_writer::empty_tag('br');
 // echo html_writer::tag('label', 'Your message');
@@ -150,6 +173,7 @@ $userfieldssql = $userfields->get_sql('u');
 $sql = "SELECT m.id, m.message, m.timecreated {$userfieldssql->selects} 
           FROM {local_greetings_messages} m 
     INNER JOIN {user} u ON u.id = m.userid
+         WHERE u.id = {$USER->id}
       ORDER BY m.timecreated";
 $messages = $DB->get_records_sql($sql);
 
@@ -163,16 +187,16 @@ if ($allowview) {
     $cardtextcolor = get_config('local_greetings', 'messagecardtextcolor');
 
     echo $OUTPUT->heading('Output messages:', 5);
-    echo html_writer::start_div('row');
+    echo html_writer::start_div('row', ['style' => 'row-gap: 30px;']);
     foreach ($messages as $message) {
         echo html_writer::start_div('col-6 col-lg-3');
-        echo html_writer::start_div('card', ['style' => 'min-height: 200px; max-height: 200px; background: '. $cardbgcolor .'; color: ' . $cardtextcolor . ';']);
-        echo html_writer::start_div('card-body d-flex flex-column pb-0');
+        echo html_writer::start_div('card', ['style' => 'min-height: 220px; max-height: 220px; background: '. $cardbgcolor .'; color: ' . $cardtextcolor . ';']);
+        echo html_writer::start_div('card-body d-flex flex-column');
         echo html_writer::tag('p', get_string('postedby', 'local_greetings', fullname($message)), ['class' => 'mb-2 font-weight-bold']);
         echo html_writer::tag('p', format_text($message->message), ['class' => 'my-0']);
         echo html_writer::tag('small', userdate($message->timecreated), ['class' => 'text-truncate']);
         if ($deleteanypost) {
-            echo html_writer::start_tag('p', array('class' => 'text-center mt-auto'));
+            echo html_writer::start_tag('div', array('class' => 'text-center mt-auto mb-2'));
             echo html_writer::link(
                 new moodle_url(
                     '/local/greetings/index.php',
@@ -185,7 +209,22 @@ if ($allowview) {
                 $OUTPUT->pix_icon('t/delete', '') . get_string('delete'),
                 ['class' => 'btn btn-danger btn-block']
             );
-            echo html_writer::end_tag('p');
+            echo html_writer::end_tag('div');
+        }
+        if ($editselectedpost) {
+            echo html_writer::start_tag('div', array('class' => 'text-center'));
+            echo html_writer::link(
+                new moodle_url(
+                    '/local/greetings/index.php',
+                    [
+                        'id' => $message->id,
+                        'message' => $message->message,
+                    ]
+                ),
+                $OUTPUT->pix_icon('i/edit', '') . get_string('edit'),
+                ['class' => 'btn btn-warning btn-block']
+            );
+            echo html_writer::end_tag('div');
         }
         echo html_writer::end_div();
         echo html_writer::end_div();

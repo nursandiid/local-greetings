@@ -30,10 +30,20 @@ require_once($CFG->libdir . '/formslib.php');
 
 class message_form extends \moodleform {
     public function definition() {
+        $id = optional_param('id', '', PARAM_TEXT);
+        $message = optional_param('message', '', PARAM_TEXT);
+
         $mform = $this->_form;
+
+        $mform->addElement('hidden', 'id');
+        $mform->setType('id', PARAM_TEXT);
+        $mform->setDefault('id', $id);
 
         $mform->addElement('textarea', 'message', get_string('yourmessage', 'local_greetings'));
         $mform->setType('message', PARAM_TEXT);
+        $mform->setDefault('message', $message);
+        $mform->addRule('message', get_string('err_required', 'form'), 'required', null, 'client');
+        $mform->addRule('message', get_string('err_minlength', 'form', ['format' => 5]), 'minlength', 5, 'client');
 
         $submitlabel = get_string('submit');
         $mform->addElement('submit', 'submitmessage', $submitlabel);
