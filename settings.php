@@ -26,11 +26,10 @@
  * Moodle IntelliSense for global variables.
  *
  * @var \admin_root $ADMIN
+ * @var bool $hassiteconfig [has_capabilites - moodle/site:config]
  */
 
 defined('MOODLE_INTERNAL') || die();
-
-require_once($CFG->dirroot . '/theme/eduhub/lib/helpers.php');
 
 if ($hassiteconfig) {
     $settings = new admin_settingpage('local_greetings', get_string('pluginname', 'local_greetings'));

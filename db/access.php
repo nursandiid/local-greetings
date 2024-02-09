@@ -43,7 +43,7 @@ $capabilities = [
     ],
     'local/greetings:deleteanymessage' => [
         'riskbitmask' => RISK_SPAM,
-        'captype' => 'delete',
+        'captype' => 'write',
         'contextlevel' => CONTEXT_SYSTEM,
         'archetypes' => [
             'user' => CAP_ALLOW
@@ -51,7 +51,7 @@ $capabilities = [
     ],
     'local/greetings:editselectedmessage' => [
         'riskbitmask' => RISK_SPAM,
-        'captype' => 'edit',
+        'captype' => 'write',
         'contextlevel' => CONTEXT_SYSTEM,
         'archetypes' => [
             'user' => CAP_ALLOW

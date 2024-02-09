@@ -32,7 +32,6 @@
 
 require_once(__DIR__ . '/../../config.php');
 require_once($CFG->dirroot . '/local/greetings/lib.php');
-require_once($CFG->dirroot . '/theme/eduhub/lib/helpers.php');
 
 $context = \context_system::instance();
 
