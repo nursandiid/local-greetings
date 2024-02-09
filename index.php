@@ -140,8 +140,9 @@ if ($deleteanypost && $action == 'del') {
     );
 }
 
-$view = new \local_greetings\output\view($templatecontext);
+// $view = new \local_greetings\output\view('local_greetings/view', $templatecontext);
+// echo $OUTPUT->render($view); 
 
 echo $OUTPUT->header();
-echo $OUTPUT->render($view);
+echo $OUTPUT->render_from_template('local_greetings/view', $templatecontext);
 echo $OUTPUT->footer();

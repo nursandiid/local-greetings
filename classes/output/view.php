@@ -32,16 +32,26 @@ defined('MOODLE_INTERNAL') || die();
 
 class view implements renderable, templatable, named_templatable {
     /**
-     *
+     * View template
+     * 
+     * @var string $view
+     */
+    protected $view;
+
+    /**
+     * Context
+     * 
      * @var array|object $data
      */
     protected $data;
 
     /**
-     *
+     * 
+     * @param string $view
      * @param array|object $data
      */
-    public function __construct($data) {
+    public function __construct($view, $data) {
+        $this->view = $view;
         $this->data = $data;
     }
 
@@ -63,6 +73,6 @@ class view implements renderable, templatable, named_templatable {
      */
     public function get_template_name(\renderer_base $renderer): string {
 
-        return 'local_greetings/view';
+        return $this->view;
     }
 }
